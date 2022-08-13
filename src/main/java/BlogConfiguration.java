@@ -1,0 +1,44 @@
+import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.config.PropertiesFactoryBean;
+import org.springframework.context.annotation.*;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+
+@PropertySource("classpath:jdbc.properties")
+@EnableJpaRepositories
+@EnableTransactionManagement
+@EnableAspectJAutoProxy
+@ComponentScan
+@Configuration
+public class BlogConfiguration {
+
+    @Bean
+    public DataSource dataSource(Environment environment) {
+        var datasource = new HikariDataSource();
+        datasource.setUsername(environment.getProperty("database.username"));
+        datasource.setPassword(environment.getProperty("database.password"));
+        datasource.setJdbcUrl(environment.getProperty("database.url"));
+        datasource.setDriverClassName(environment.getProperty("database.driver"));
+        datasource.setMaximumPoolSize(20);
+        return datasource;
+    }
+
+    @Bean
+    public PropertiesFactoryBean jpaProperties() {
+        var factoryBean = new PropertiesFactoryBean();
+        factoryBean.setLocation(new ClassPathResource("jpa.properties"));
+        return factoryBean;
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
+    }
+}
