@@ -1,3 +1,5 @@
+package pl.javadev;
+
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
