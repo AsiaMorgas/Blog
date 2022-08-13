@@ -45,8 +45,7 @@ public class BlogConfiguration {
         var factoryBean = new LocalContainerEntityManagerFactoryBean();
         factoryBean.setDataSource(dataSource);
         factoryBean.setJpaProperties(jpaProperties);
-        //TODO: update package name
-        factoryBean.setPackagesToScan("?????");
+        factoryBean.setPackagesToScan("pl.javadev");
         factoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
         return factoryBean;
     }
