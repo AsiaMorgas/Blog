@@ -1,15 +1,18 @@
 import com.zaxxer.hikari.HikariDataSource;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.Properties;
 
 @PropertySource("classpath:jdbc.properties")
 @EnableJpaRepositories
@@ -34,6 +37,17 @@ public class BlogConfiguration {
     public PropertiesFactoryBean jpaProperties() {
         var factoryBean = new PropertiesFactoryBean();
         factoryBean.setLocation(new ClassPathResource("jpa.properties"));
+        return factoryBean;
+    }
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, Properties jpaProperties) {
+        var factoryBean = new LocalContainerEntityManagerFactoryBean();
+        factoryBean.setDataSource(dataSource);
+        factoryBean.setJpaProperties(jpaProperties);
+        //TODO: update package name
+        factoryBean.setPackagesToScan("?????");
+        factoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
         return factoryBean;
     }
 
